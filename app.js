@@ -4,9 +4,9 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-const scrape = require('./helpers/scrape');
+// const scrape = require('./helpers/scrape');
 
-scrape.launchBrowser();
+// scrape.launchBrowser();
 
 var indexRouter = require('./routes/index');
 

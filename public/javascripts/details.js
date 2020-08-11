@@ -1,81 +1,55 @@
 var pageData = [];
-var updateWinOdds = new Array();
-var updateTable = new Array(); 
 
 $(document).ready(function () {
   console.log(query);
   axios.post('/pagedata', {
-      trackurl: query.trackUrl
+      trackUrl: query.trackUrl
     })
     .then(function (resp) {
-      var response = resp.data;
-      if (response.status === 'SUCCESS') {
-        console.log(response);
-        pageData.push(response);
-        addPageData(response);
-        updateWinOdds = response.winOdds.map(wo => true);
-        updateTable.length = response.tableData.length;
-        for (let i = 0; i < updateTable.length; i++) {
-          updateTable[i] = response.tableData.map(td => true);
-        }
+      var data = resp.data;
+      if (data.status === 'SUCCESS') {
+        console.log(data);
+        addPageData(data);
         startTimer();
+        if (data.MTP == query.startAt) {
+          pageData.push(data);
+          $('.info__detail#nextCheck').text(query.finalCheckSeconds + ' Seconds After 0 MTP');
+        } else {
+          $('.info__detail#nextCheck').text(query.startAt);
+        }
       } else {
         $('.loader-overlay i').css('display', 'none');
-        $('.loader-overlay .error__msg').text(response.error);
+        $('.loader-overlay .error__msg').text(data.error);
         $('.loader-overlay .error__msg').css('display', 'block');
       }
     });
 
-    $(document).on('click', 'table.race__table tbody tr td:not(:first-of-type), table.saddle__table tbody tr td:not(:first-of-type)', function (e) { 
-      if ($(this).hasClass('blacked')) {
-        $(this).removeClass('blacked');
-      } else {
-        $(this).addClass('blacked');
-      }
-    });
-
-    $(document).on('click', 'table.race__table tbody tr td:first-of-type', function (e) {
-      if ($(this).parent().hasClass('rowblacked')) {
-        $(this).parent().removeClass('rowblacked');
-        $(this).parent().children().each(function(index) {
-          if (index > 0) {
-            $(this).removeClass('blacked');
-          }
-        })
-      } else {
-        $(this).parent().addClass('rowblacked');
-        $(this).parent().children().each(function(index) {
-          if (index > 0) {
-            $(this).addClass('blacked');
-          }
-        })
-      }
-    });
 });
 
 function startTimer() {
-  console.log('Running minute by minute function')
+  console.log('Started Timer...')
   var intervalFunc = setInterval(function () {
     axios.post('/pagedata', {
-        trackurl: trackurl
+        trackUrl: query.trackUrl
       })
       .then((resp) => {
-        var response = resp.data;
-        if (response.status === 'SUCCESS') {
-          if ($('.info__detail#mtp').text() !== response.MTP) {
-            pageData.push(response);
-            calcChange();
-            updatePageData();
-            if (response.MTP == '0') {
+        var data = resp.data;
+        if (data.status === 'SUCCESS') {
+          console.log(data);
+          if (Number($('.info__detail#mtp').text()) !== data.MTP) {
+            if (data.MTP == query.startAt) {
+              $('.info__detail#nextCheck').text(`${query.finalCheckSeconds} Seconds After 0 MTP`);
+              pageData.push(data);
+            } else if (data.MTP == query.endAt) {
               clearInterval(intervalFunc);
               startTimer0();
             }
           }
-          $('.info__detail#mtp').text(response.MTP);
+          updatePageData(data);
         } else {
           $('.loader-overlay').css('display', 'block');
           $('.loader-overlay i').css('display', 'none');
-          $('.loader-overlay .error__msg').text(response.error);
+          $('.loader-overlay .error__msg').text(data.error);
           $('.loader-overlay .error__msg').css('display', 'block');
         }
       });
@@ -86,23 +60,23 @@ function startTimer0() {
   console.log('Running timer 0 function');
   var timeoutFunc = setTimeout(() => {
     axios.post('/pagedata', {
-      trackurl: trackurl
+      trackUrl: query.trackUrl
     })
     .then((resp) => {
-      var response = resp.data;
-      if (response.status === 'SUCCESS') {
-        pageData.push(response);
-        calcChange();
-        updatePageData();
-        $('.info__detail#mtp').text(response.MTP);
+      var data = resp.data;
+      if (data.status === 'SUCCESS') {
+        pageData.push(data);
+        updatePageData(data);
+        addChangeColumn();
+        $('.info__detail#mtp').text(data.MTP);
       } else {
         $('.loader-overlay').css('display', 'block');
         $('.loader-overlay i').css('display', 'none');
-        $('.loader-overlay .error__msg').text(response.error);
+        $('.loader-overlay .error__msg').text(data.error);
         $('.loader-overlay .error__msg').css('display', 'block');
       }
     });
-  }, 90000);
+  }, query.finalCheckSeconds * 1000);
 }
 
 function addPageData(data) {
@@ -113,72 +87,48 @@ function addPageData(data) {
   $('.info__detail#numberofhorses').text(data.horsesNames.length);
   $('.info__detail#mtp').text(data.MTP);
 
-  for (let i = 0; i < data.horsesNames.length; i++) {
-    var horseNameNode = '<th>' + data.horsesNames[i] + '</th>';
-    $('.race__table thead tr').append(horseNameNode);
-    $('.saddle__table thead tr').append(horseNameNode);
+  for (let i = 0; i < data.tableData.length; i++) {
+    $('.race__table tbody').append('<tr class="' + data.horsesNames[i] + '"></tr>');
+    $('.race__table tbody tr.' + data.horsesNames[i]).append('<td class="table-primary" scope="col">' + data.horsesNames[i] + '</td>')
+    $('.race__table tbody tr.' + data.horsesNames[i]).append('<td>' + data.tableData[i] + '</td>')
   }
+  $('<td class="table-primary">Total</td><td>' + data.total + '</td>').appendTo('.race__table tbody');
+}
 
-  $('.saddle__table tbody tr').append('<td></td>')
-  
-  for (let i = 0; i < data.winOdds.length; i++) {
-    $('.saddle__table tbody tr').append('<td>'+ data.winOdds[i]  +'</td>')
-  }
+function updatePageData(data) {
+  $('.info__detail#mtp').text(data.MTP);
+  $('.race__table tbody').html('');
 
   for (let i = 0; i < data.tableData.length; i++) {
     $('.race__table tbody').append('<tr class="' + data.horsesNames[i] + '"></tr>');
     $('.race__table tbody tr.' + data.horsesNames[i]).append('<td class="table-primary" scope="col">' + data.horsesNames[i] + '</td>')
-    for (let a = 0; a < data.tableData[i].length; a++) {
-      $('.race__table tbody tr.' + data.horsesNames[i]).append('<td>' + data.tableData[i][a] + '</td>')
-    }
+    $('.race__table tbody tr.' + data.horsesNames[i]).append('<td>' + data.tableData[i] + '</td>')
   }
+  $('<td class="table-primary">Total</td><td>' + data.total + '</td>').appendTo('.race__table tbody');
 }
 
-function updatePageData() {
-  var cData = pageData[pageData.length - 1];
-
-  for (let i = 0; i < cData.winOdds.length; i++) {
-    if (updateWinOdds[i]) {
-      var decidedClass = '';
-      if (cData.winOddsChange[i] !== 0) {
-        updateWinOdds[i] = false;
-        if (cData.winOddsChange[i] < 0) {
-          decidedClass = 'table-success';
-        } else {
-          decidedClass = 'table-danger';
-        }
-      }
-      var sel = '.saddle__table tbody tr:nth-of-type(1) td:nth-of-type(' + (i + 2) + ')';
-      $(sel).addClass(decidedClass);      
-      var htmlToAppend = cData.winOdds[i]  + '<sup>(' + pageData[pageData.length-2].winOdds[i] + ')</sup>';
-      $(sel).html(htmlToAppend);
+function addChangeColumn() {
+  const changes = [];
+  let total = 0;
+  console.log(`Number of pageData: ${pageData.length}`);
+  if (pageData.length == 2) {
+    for (let i = 0; i < pageData[0].horsesNames.length; i++) {
+      const change = pageData[1].tableData[j] - pageData[0].tableData[j];
+      changes.push(change);
     }
+    total = changes.reduce((a,b) => a + b);
+
+    $('<td class="table-primary">Change</td>').appendTo('.race__table tbody > tr:first-child');
+    $('<td class="table-primary">Percentage</td>').appendTo('.race__table tbody > tr:first-child');
+    for (let i = 0; i < changes.length; i++) {
+      $('<td>' + changes[i] + '</td>').appendTo('.race__table tbody > tr:nth-child(' + (i + 1) + ')');
+      const perc = (changes[i] / total) * 100;
+      $('<td>' +  perc + '</td>').appendTo('.race__table tbody > tr:nth-child(' + (i + 1) + ')');
+    }
+    $('<td>' + total + '</td>').appendTo('.race__table tbody > tr:last-child');
+    $('<td>100%</td>').appendTo('.race__table tbody > tr:last-child');
   }
 
-  for (let i = 0; i < cData.tableData.length; i++) {
-    for (let j = 0; j < cData.tableData[i].length; j++) {
-      if (updateTable[i][j]) {
-        var sign = '&darr;';
-        var alertClass = '';
-        var diffInPerc = cData.change[i][j];
-        var diffAbsRound = Math.abs(Math.round(diffInPerc));
-        if (diffInPerc >= 0) sign = '&uarr;';
-        
-        if (diffInPerc <= -15 && updateTable[i][j]) {
-          updateTable[i][j] = false;
-        }
-  
-        if (diffInPerc <= -50) alertClass = 'table-warning'
-        else if (diffInPerc <= -25) alertClass = 'table-danger'
-        else if (diffInPerc <= -15) alertClass = 'table-success'
-        
-        const sel = '.race__table tbody tr:nth-of-type(' + (i + 1) +') td:nth-of-type(' + (j + 2) + ')';
-        $(sel).addClass(alertClass);
-        var htmlToAppend = cData.tableData[i][j] + '<sup title="' + diffInPerc + '">(' + sign + diffAbsRound + '%)</sup>';
-        $(sel).html(htmlToAppend);
-      }
-    }
-  }
 }
 
 function calcChange() {

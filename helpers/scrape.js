@@ -8,3 +8,8 @@ module.exports.launchBrowser = async () => {
     await this.launchBrowser();
   });
 }
+
+module.exports.launchPage = async () {
+  const page = await pupHelper.launchPage(browser);
+  return page;
+}

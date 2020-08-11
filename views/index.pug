@@ -14,8 +14,12 @@ block content
             label.small.font-weight-bold(for="startAt") Start At (MTP)
             input#startAt.form-control.mb-4(type="number" name="startAt" placeholder="MTP at which to start getting data" min="1" value="2" required)
         .row
+          .form-group.col.text-left
+            label.small.font-weight-bold(for="endAt") End At (MTP)
+            input#endAt.form-control.mb-4(type="number" name="endAt" placeholder="" min="0" max="1" value="0" required)
+        .row
           .col.text-left
-            label.small.font-weight-bold End At
+            label.small.font-weight-bold Last Check
         .row.mb-3
           .col-md-6.form-check
             input#finalcheck.form-check-input(type="radio", name="finalCheck", checked value="manual")
