@@ -118,11 +118,11 @@ function addChangeColumn() {
     }
     total = changes.reduce((a,b) => a + b);
 
-    $('<td class="table-primary">Change</td>').appendTo('.race__table tbody > tr:first-child');
-    $('<td class="table-primary">Percentage</td>').appendTo('.race__table tbody > tr:first-child');
+    $('<th class="table-primary">Change</th>').appendTo('.race__table thead > tr:first-child');
+    $('<th class="table-primary">Percentage</th>').appendTo('.race__table thead > tr:first-child');
     for (let i = 0; i < changes.length; i++) {
       $('<td>' + changes[i] + '</td>').appendTo('.race__table tbody > tr:nth-child(' + (i + 1) + ')');
-      const perc = (changes[i] / total) * 100;
+      const perc = Math.round((changes[i] / total) * 100);
       $('<td>' +  perc + '</td>').appendTo('.race__table tbody > tr:nth-child(' + (i + 1) + ')');
     }
     $('<td>' + total + '</td>').appendTo('.race__table tbody > tr:last-child');
