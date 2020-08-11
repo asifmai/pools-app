@@ -15,7 +15,7 @@ module.exports.details_post = (req, res, next) => {
 module.exports.pagedata_post = async (req, res, next) => {
   const pageData = {};
   const trackURL = req.body.trackUrl;
-  const browser = await puppeteerHelper.launchBrowser(true);
+  const browser = await puppeteerHelper.launchBrowser();
   console.log('Launched browser');
   try {
     const page = await puppeteerHelper.launchPage(browser, false);
