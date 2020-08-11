@@ -92,7 +92,7 @@ function addPageData(data) {
     $('.race__table tbody tr.' + data.horsesNames[i]).append('<td class="table-primary" scope="col">' + data.horsesNames[i] + '</td>')
     $('.race__table tbody tr.' + data.horsesNames[i]).append('<td>' + data.tableData[i] + '</td>')
   }
-  $('<td class="table-primary">Total</td><td>' + data.total + '</td>').appendTo('.race__table tbody');
+  $('<tr><td class="table-primary" scope="col">Total</td><td>' + data.total + '</td></tr>').appendTo('.race__table tbody');
 }
 
 function updatePageData(data) {
@@ -104,7 +104,7 @@ function updatePageData(data) {
     $('.race__table tbody tr.' + data.horsesNames[i]).append('<td class="table-primary" scope="col">' + data.horsesNames[i] + '</td>')
     $('.race__table tbody tr.' + data.horsesNames[i]).append('<td>' + data.tableData[i] + '</td>')
   }
-  $('<td class="table-primary">Total</td><td>' + data.total + '</td>').appendTo('.race__table tbody');
+  $('<tr><td class="table-primary" scope="col">Total</td><td>' + data.total + '</td></tr>').appendTo('.race__table tbody');
 }
 
 function addChangeColumn() {
