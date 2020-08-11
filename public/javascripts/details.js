@@ -13,7 +13,7 @@ $(document).ready(function () {
         startTimer();
         if (data.MTP == query.startAt) {
           pageData.push(data);
-          $('.info__detail#nextCheck').text(query.finalCheckSeconds + ' Seconds After 0 MTP');
+          $('.info__detail#nextCheck').text(query.finalCheckSeconds + ' Seconds After ' + query.endAt + ' MTP');
         } else {
           $('.info__detail#nextCheck').text(query.startAt);
         }
@@ -38,7 +38,7 @@ function startTimer() {
           console.log(data);
           if (Number($('.info__detail#mtp').text()) !== data.MTP) {
             if (data.MTP == query.startAt) {
-              $('.info__detail#nextCheck').text(`${query.finalCheckSeconds} Seconds After 0 MTP`);
+              $('.info__detail#nextCheck').text(query.finalCheckSeconds + ' Seconds After ' + query.endAt + ' MTP');
               pageData.push(data);
             } else if (data.MTP == query.endAt) {
               clearInterval(intervalFunc);
@@ -113,7 +113,7 @@ function addChangeColumn() {
   console.log(`Number of pageData: ${pageData.length}`);
   if (pageData.length == 2) {
     for (let i = 0; i < pageData[0].horsesNames.length; i++) {
-      const change = pageData[1].tableData[j] - pageData[0].tableData[j];
+      const change = pageData[1].tableData[i] - pageData[0].tableData[i];
       changes.push(change);
     }
     total = changes.reduce((a,b) => a + b);
