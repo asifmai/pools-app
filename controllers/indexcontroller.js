@@ -6,7 +6,11 @@ module.exports.details_get = async (req, res, next) => {
   const profile = await Profile.findById(id);
 
   console.log('Profile: ', profile);
-  res.render('details', {query: profile});
+  if (profile.finalCheck == 'manual') {
+    res.render('details-manual', {query: profile});
+  } else {
+    res.render('details', {query: profile});
+  }
 } 
 
 module.exports.pagedata_post = async (req, res, next) => {

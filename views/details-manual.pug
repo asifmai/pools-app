@@ -1,0 +1,47 @@
+extends layout
+
+block content
+  .loader-overlay
+    i.fa.fa-spinner.fa-pulse
+    .error__msg Error!
+  .container
+    .row.my-4
+      .col.text-center
+        h1.page__title Pools App
+    .row.mt-4
+      .col-md-6
+        .info__line
+          span.info__name Race Track Name:
+          span.info__detail#trackname 
+      .col-md-6.ml-auto
+        button#manualUpdate.btn.btn-secondary(disabled='true') Update Now
+    .row.mb-4
+      .col-md-3
+        .info__line
+          span.info__name Race Number: 
+          span.info__detail#racenumber 
+      .col-md-3
+        .info__line
+          span.info__name No. Of Horses: 
+          span.info__detail#numberofhorses 
+      .col-md-3
+        .info__line
+          span.info__name MTP:
+          span.info__detail#mtp
+      .col-md-3
+        .info__line
+          span.info__name Next Check (MTP):
+          span.info__detail#nextCheck
+    .row.my-4
+      .col.text-center
+        .table-responsive
+          table.race__table.table.table-bordered
+            thead.table-primary
+              tr
+                th Horses
+                th Wins
+            tbody
+block customscripts
+  script.
+    var query = !{JSON.stringify(query)}
+  script(src="/javascripts/details-manual.js")
