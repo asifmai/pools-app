@@ -5,12 +5,18 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 // const scrape = require('./helpers/scrape');
+const mongoose = require('mongoose');
 
 // scrape.launchBrowser();
 
 var indexRouter = require('./routes/index');
 
 var app = express();
+
+// DB Config;
+mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log('MongoDB Connected...'))
+  .catch(err => console.log('MongoDB Connect Error:', err));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

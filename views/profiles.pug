@@ -1,0 +1,37 @@
+extends layout
+
+block content
+  .body-container.home__body
+    .card.home__card.profiles__card
+      h1.page__title Pools App
+      .row.mt-5
+        .col
+          table.table.text-left
+            thead
+              tr
+                th Track Name
+                th Track URL
+                th Start At
+                th End At
+                th Final Check
+                th Final Check Seconds
+                th Actions
+            tbody
+              each profile in profiles
+                tr
+                  td
+                    a.text-primary(href=`/details/${profile.id}` target="_blank")=profile.trackName
+                  td=profile.trackUrl
+                  td=profile.startAt
+                  td=profile.endAt
+                  td=profile.finalCheck
+                  td=profile.finalCheckSeconds
+                  td
+                    a.text-danger(href=`/deleteprofile/${profile.id}`) Delete
+
+      .row.my-3
+        .col-md-4.mx-auto.text-center
+          a.btn.btn-secondary(href="/") Go Back
+
+block customscripts
+  script(src="/javascripts/index.js")

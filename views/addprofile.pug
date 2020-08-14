@@ -1,0 +1,45 @@
+extends layout
+
+block content
+  .body-container.home__body
+    .card.home__card
+      h1.page__title Pools App
+      h3 Create a New Profile
+      form(action="/addprofile", method="POST")
+        .row
+          .form-group.col.text-left
+            label.small.font-weight-bold(for="trackName") Track Name
+            input#trackname.form-control.mb-4(type="text" name="trackName" placeholder="Enter Track Name" required)
+        .row
+          .form-group.col.text-left
+            label.small.font-weight-bold(for="trackurl") Track Url
+            input#trackurl.form-control.mb-4(type="text" name="trackUrl" placeholder="Enter Track URL" required)
+        .row
+          .form-group.col.text-left
+            label.small.font-weight-bold(for="startAt") Start At (MTP)
+            input#startAt.form-control.mb-4(type="number" name="startAt" placeholder="MTP at which to start getting data" min="0" value="2" required)
+        .row
+          .form-group.col.text-left
+            label.small.font-weight-bold(for="endAt") End At (MTP)
+            input#endAt.form-control.mb-4(type="number" name="endAt" placeholder="" min="0" max="1" value="0" required)
+        .row
+          .col.text-left
+            label.small.font-weight-bold Last Check
+        .row.mb-3
+          .col-md-6.form-check
+            input#finalcheck.form-check-input(type="radio", name="finalCheck", checked value="manual")
+            label(for="finalcheck") Manual
+          .col-md-6.form-check
+            input#finalcheck2.form-check-input(type="radio", name="finalCheck" value="custom")
+            label(for="finalcheck2") Custom
+        .row.custom-row
+          .form-group.col-md-6.ml-auto
+            label.small.font-weight-bold(for="endAt") Seconds After 0 MTP
+            input#endAt.form-control( type="number" min="0" value="0" name="finalCheckSeconds")
+        .row
+          .col-md-6
+            button.btn.btn-primary.btn-block(type="submit") Save
+          .col-md-6
+            a.btn.btn-secondary.btn-block(href="/") Cancel
+block customscripts
+  script(src="/javascripts/index.js")

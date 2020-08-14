@@ -1,15 +1,12 @@
 const puppeteerHelper = require('../helpers/puppeteerhelper');
+const Profile = require('../models/profile');
 
-module.exports.details_post = (req, res, next) => {
-  const query = {
-    trackUrl: req.body.trackUrl,
-    startAt: Number(req.body.startAt),
-    endAt: Number(req.body.endAt),
-    finalCheck: req.body.finalCheck,
-    finalCheckSeconds: req.body.finalCheckSeconds ? Number(req.body.finalCheckSeconds) : 0,
-  }
-  console.log('Query: ', query);
-  res.render('details', {query});
+module.exports.details_get = async (req, res, next) => {
+  const {id} = req.params;
+  const profile = await Profile.findById(id);
+
+  console.log('Profile: ', profile);
+  res.render('details', {query: profile});
 } 
 
 module.exports.pagedata_post = async (req, res, next) => {
@@ -57,3 +54,28 @@ module.exports.pagedata_post = async (req, res, next) => {
     res.json(pageData);
   }
 };
+
+module.exports.addprofile_post = async (req, res, next) => {
+  const newProfile = new Profile({
+    trackName: req.body.trackName,
+    trackUrl: req.body.trackUrl,
+    startAt: Number(req.body.startAt),
+    endAt: Number(req.body.endAt),
+    finalCheck: req.body.finalCheck,
+    finalCheckSeconds: req.body.finalCheckSeconds ? Number(req.body.finalCheckSeconds) : 0,
+  });
+  await newProfile.save();
+  res.redirect('/');
+}
+
+module.exports.profiles_get = async (req, res, next) => {
+  const profiles = await Profile.find().sort({trackName: 'asc'}).exec();
+  res.render('profiles', {profiles});
+}
+
+module.exports.deleteprofile_get = async (req, res, next) => {
+  const {id} = req.params;
+  await Profile.findByIdAndDelete(id);
+
+  res.redirect('/profiles');
+}

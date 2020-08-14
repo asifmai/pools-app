@@ -1,4 +1,7 @@
 var pageData = [];
+var audio = new Howl({
+  src: ['/sounds/notif.mp3', '/sounds/notif.ogg']
+});
 
 $(document).ready(function () {
   console.log(query);
@@ -40,6 +43,10 @@ function startTimer() {
             if (data.MTP == query.startAt) {
               $('.info__detail#nextCheck').text(query.finalCheckSeconds + ' Seconds After ' + query.endAt + ' MTP');
               pageData.push(data);
+              if (query.startAt == 0) {
+                clearInterval(intervalFunc);
+                startTimer0();
+              }
             } else if (data.MTP == query.endAt) {
               clearInterval(intervalFunc);
               startTimer0();
@@ -68,6 +75,7 @@ function startTimer0() {
         pageData.push(data);
         updatePageData(data);
         addChangeColumn();
+        audio.play();
         $('.info__detail#mtp').text(data.MTP);
       } else {
         $('.loader-overlay').css('display', 'block');
@@ -129,39 +137,4 @@ function addChangeColumn() {
     $('<td>100%</td>').appendTo('.race__table tbody > tr:last-child');
   }
 
-}
-
-function calcChange() {
-  if (pageData.length > 1) {
-    pageData[pageData.length - 1].change = [];
-    for (let i = 0; i < pageData[pageData.length - 1].tableData.length; i++) {
-      var diffArray = [];
-      for (let j = 0; j < pageData[pageData.length - 1].tableData[i].length; j++) {
-        var diff = (pageData[pageData.length - 1].tableData[i][j] - pageData[pageData.length - 2].tableData[i][j]);
-        var diffInPerc = (diff / pageData[pageData.length - 2].tableData[i][j]) * 100;
-        if (!diffInPerc) {
-          diffInPerc = 0
-        };
-        diffArray.push(diffInPerc);
-      }
-      pageData[pageData.length - 1].change.push(diffArray);
-    }
-
-    pageData[pageData.length-1].winOddsChange = [];
-    for (var i = 0; i < pageData[pageData.length-1].winOdds.length; i++) {
-      if (pageData[pageData.length-2].winOdds[i] !== '' && pageData[pageData.length-2].winOdds[i].includes('-')) {
-        var prevNom = Number(pageData[pageData.length-2].winOdds[i].match(/\d*(?=\-)/gi)[0]);
-        var prevDenom = Number(pageData[pageData.length-2].winOdds[i].match(/(?<=\-)\d*/gi)[0]);
-        var previousOdds = prevNom / prevDenom;
-        var currentNom = Number(pageData[pageData.length-1].winOdds[i].match(/\d*(?=\-)/gi)[0]);
-        var currentDenom = Number(pageData[pageData.length-1].winOdds[i].match(/(?<=\-)\d*/gi)[0]);
-        var currentOdds = currentNom / currentDenom;
-        var diffOdds = currentOdds - previousOdds;
-        pageData[pageData.length-1].winOddsChange.push(diffOdds);
-      } else {
-        pageData[pageData.length-1].winOddsChange.push(0);
-      }
-    }
-  }
-  console.log(pageData);
 }

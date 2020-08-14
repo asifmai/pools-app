@@ -23,6 +23,10 @@ body {
   border-radius: 15px;
 }
 
+.home__card.profiles__card {
+  max-width: 900px;
+}
+
 h1.page__title {
   font-weight: 900;
 }
@@ -91,8 +95,4 @@ table.race__table tbody tr td sup.increase {
 .blacked {
   color: black !important;
   background: black !important;
-}
-
-.custom-row {
-  display: none;
 }
