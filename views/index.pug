@@ -4,11 +4,33 @@ block content
   .body-container.home__body
     .card.home__card
       h1.page__title Pools App
-      .row.my-5
-        .col-md-4.mx-auto
-          a.btn.btn-secondary.btn-block(href="/profiles") View Profiles
-        .col-md-4.mx-auto
-          a.btn.btn-secondary.btn-block(href="/addprofile") Add Profile
-
+      form(action="/details", method="POST", target="_blank")
+        .row
+          .form-group.col.text-left
+            label.small.font-weight-bold(for="trackurl") Track Url
+            input#trackurl.form-control.mb-4(type="text" name="trackUrl" placeholder="Enter Track URL" required)
+        .row
+          .form-group.col.text-left
+            label.small.font-weight-bold(for="startAt") Start At (MTP)
+            input#startAt.form-control.mb-4(type="number" name="startAt" placeholder="MTP at which to start getting data" min="0" value="2" required)
+        .row
+          .form-group.col.text-left
+            label.small.font-weight-bold(for="endAt") End At (MTP)
+            input#endAt.form-control.mb-4(type="number" name="endAt" placeholder="" min="0" max="1" value="0" required)
+        .row
+          .col.text-left
+            label.small.font-weight-bold Last Check
+        .row.mb-3
+          .col-md-6.form-check
+            input#finalcheck.form-check-input(type="radio", name="finalCheck", checked value="manual")
+            label(for="finalcheck") Manual
+          .col-md-6.form-check
+            input#finalcheck2.form-check-input(type="radio", name="finalCheck" value="custom")
+            label(for="finalcheck2") Custom
+        .row.custom-row
+          .form-group.col-md-6.ml-auto
+            label.small.font-weight-bold(for="endAt") Seconds After 0 MTP
+            input#endAt.form-control( type="number" min="0" value="0" name="finalCheckSeconds")
+        button.btn.btn-primary.btn-block(type="submit") Submit
 block customscripts
   script(src="/javascripts/index.js")

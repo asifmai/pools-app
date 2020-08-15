@@ -1,0 +1,14 @@
+extends layout
+
+block content
+  .body-container.home__body
+    .card.home__card
+      h1.page__title Pools App
+      .row.my-5
+        .col-md-4.mx-auto
+          a.btn.btn-secondary.btn-block(href="/profiles") View Profiles
+        .col-md-4.mx-auto
+          a.btn.btn-secondary.btn-block(href="/addprofile") Add Profile
+
+block customscripts
+  script(src="/javascripts/index.js")
