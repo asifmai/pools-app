@@ -1,15 +1,13 @@
 const puppeteerHelper = require('../helpers/puppeteerhelper');
-const Profile = require('../models/profile');
+// const Profile = require('../models/profile');
 
-module.exports.details_get = async (req, res, next) => {
-  const {id} = req.params;
-  const profile = await Profile.findById(id);
-
-  console.log('Profile: ', profile);
-  if (profile.finalCheck == 'manual') {
-    res.render('details-manual', {query: profile});
+module.exports.details_post = async (req, res, next) => {
+  console.log(req.body);
+  const query = req.body
+  if (query.finalCheck == 'manual') {
+    res.render('details-manual', {query});
   } else {
-    res.render('details', {query: profile});
+    res.render('details', {query});
   }
 } 
 
@@ -59,27 +57,27 @@ module.exports.pagedata_post = async (req, res, next) => {
   }
 };
 
-module.exports.addprofile_post = async (req, res, next) => {
-  const newProfile = new Profile({
-    trackName: req.body.trackName,
-    trackUrl: req.body.trackUrl,
-    startAt: Number(req.body.startAt),
-    endAt: Number(req.body.endAt),
-    finalCheck: req.body.finalCheck,
-    finalCheckSeconds: req.body.finalCheckSeconds ? Number(req.body.finalCheckSeconds) : 0,
-  });
-  await newProfile.save();
-  res.redirect('/');
-}
+// module.exports.addprofile_post = async (req, res, next) => {
+//   const newProfile = new Profile({
+//     trackName: req.body.trackName,
+//     trackUrl: req.body.trackUrl,
+//     startAt: Number(req.body.startAt),
+//     endAt: Number(req.body.endAt),
+//     finalCheck: req.body.finalCheck,
+//     finalCheckSeconds: req.body.finalCheckSeconds ? Number(req.body.finalCheckSeconds) : 0,
+//   });
+//   await newProfile.save();
+//   res.redirect('/');
+// }
 
-module.exports.profiles_get = async (req, res, next) => {
-  const profiles = await Profile.find().sort({trackName: 'asc'}).exec();
-  res.render('profiles', {profiles});
-}
+// module.exports.profiles_get = async (req, res, next) => {
+//   const profiles = await Profile.find().sort({trackName: 'asc'}).exec();
+//   res.render('profiles', {profiles});
+// }
 
-module.exports.deleteprofile_get = async (req, res, next) => {
-  const {id} = req.params;
-  await Profile.findByIdAndDelete(id);
+// module.exports.deleteprofile_get = async (req, res, next) => {
+//   const {id} = req.params;
+//   await Profile.findByIdAndDelete(id);
 
-  res.redirect('/profiles');
-}
+//   res.redirect('/profiles');
+// }

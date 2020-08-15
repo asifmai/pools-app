@@ -19,7 +19,7 @@ router.get('/', function(req, res, next) {
 // router.post('/addprofile', indexController.addprofile_post);
 
 /* GET Details Page. */
-router.get('/details/:id', indexController.details_get);
+router.post('/details/', indexController.details_post);
 
 /* GET Delete Profile. */
 // router.get('/deleteprofile/:id', indexController.deleteprofile_get);
